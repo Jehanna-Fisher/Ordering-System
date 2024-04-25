@@ -1,0 +1,95 @@
+#Importing tkinter
+from tkinter import *
+
+#Setting default values
+frm = Tk()
+answer = "Answer: "
+CalcMode = "Celsuis"
+
+#Caculates and displays the completed formula for Celsuis/Fahrenheit
+def caculate():
+    global Checker
+    global CalcMode
+
+    #Checks and verifies valid user input
+    def FloatCheck():
+        global Checker
+        try:
+            Num = float(Checker)
+        except:
+            Checker = "False"
+            my_text.config(text = " Invalid input ")
+
+
+    #Reponsible for doing all of the actual math
+    global my_text
+        
+    C = (my_input.get())
+    Checker = C
+    FloatCheck()
+
+    if Checker != "False":
+        C = float(C)
+        if CalcMode == "Celsuis":  
+            F = (9/5 * C + 32)
+        else:
+            F = (C - 32) * 5/9
+        #Dipslays the actual number
+        my_text.config(text = answer + str(F))
+
+        
+#Sets mode to Fahreinheit
+def FahrMode():
+    global CalcMode
+    CalcMode = "Fahrenheit"
+    caculate()
+
+#Sets mode to Celsuis
+def CelMode():
+    global CalcMode
+    CalcMode = "Celsuis"
+    caculate()
+    
+
+#A shorcut to creating buttons quickly
+def CreateBbt(texts, commands):
+    x = Button(frm,
+               text=texts,
+               command = commands)
+    return x
+
+#A shortcut to creating text quickly
+def CreateTxt(texts):
+    x = Label(frm,
+         text=texts)
+    return x
+
+#A shortcut to creating Entry widgets
+def CreateEty():
+    x = Entry(frm,
+              text="")
+    return x
+
+#Adds all widjets to the window
+my_covert = CreateBbt("Convert", caculate)
+my_text = CreateTxt("Answer")
+my_input = CreateEty()
+
+my_Fah = CreateBbt("Fahrenheit to Celuis", FahrMode)
+my_Cel = CreateBbt("Celuis to Fahrenheit", CelMode)
+
+CreateTxt("Enter a numerical value").pack()
+CreateTxt("").pack()
+
+my_input.pack()
+my_covert.pack()
+CreateTxt("").pack()
+
+my_text.pack()
+CreateTxt("").pack()
+
+my_Cel.pack()
+my_Fah.pack()
+
+
+frm.mainloop()
