@@ -1,67 +1,91 @@
-#Importing tkinter
+#Jehanna Fisher
+#Version 1.0
+#This is a GUI program ordering system for icecream
+#Varibles Used:
+#   frm: shortcut variable for "Tk()"
+#   frm.title = Title of Ordering System
+#   Progress = Notes the current progress of the program
+#   basic[] = A list not in use yet
+#   LocationX[] = Keeps all x positions for each widjet
+#   LocationY[] = Keeps all y positions for each widjet
+#   x = local variable used to return button attributes
+#   var1-9 = a series of independent check buttons
+#   Method = Records value for dining method
+#   Size = Records value for sizing choice
+#   CupType = Records value for the type of cup
+#   Location = Records value for the location type
+#   Toppings[] = Contains all selected toppings
+#   method_show = label widjet that confirms user input on method
+#   size_show = label widjet that confirms user input on size
+#   CupType_show = label widjet that confirms user input on CupType
+#   TempX = A temporary LocationX variable
+#   TempY = A temporary LocationY variable
+#   Location[] = Contains all buttons and widjets used per screen
+#   exit_bbt = Continues the order
+#   back_bbt = Retracks the order
+#   Order[] = Contains all screen names
+#   Counter = Used to progress up and down the order list
+
+#Unused Variables:
+#   title
+#   space
+#   Done
+
+#Remaining Widjets:
+#    pick_up = Pick up selection button
+#    dine_in = Dine in selection button
+#    one_scoop = One scoop selection button
+#    two_scoop = Two scoops selection button
+#    three_scoop = Three scoops selection button
+#    cone = Cone selection button
+#    sundae = Sundae selection button
+#    nuts = Nuts option
+#    chocolate = chocolate option
+#    strawberry_syrup = strawberry syrup option
+#    pineapple_syrup = pineapple syrup option
+#    whip_cream = whip cream option
+#    sprinkles = sprinkles option
+#    sugar_cookies = sugar cookie option
+#    bananas = bananas option
+#    cherry = cherry on top option
+#    order_report = "Order Report:" label
+#    size_report = Size label
+#    CupType_report = Cup type label
+#    toppings_report = Every topping label
+#    method_report = "Method Option:" label
+#    method2_report = Method label
+
+
+
+#Import tkinter into the code
 from tkinter import *
 
-#Setting default values
+
+#Defining the widjets and list
 frm = Tk()
-answer = "Answer: "
-CalcMode = "Celsuis"
+frm.title("Ordering System")
+Progress = "Method"
+basic = []
+LocationX = []
+LocationY = []
 
-#Caculates and displays the completed formula for Celsuis/Fahrenheit
-def caculate():
-    global Checker
-    global CalcMode
-
-    #Checks and verifies valid user input
-    def FloatCheck():
-        global Checker
-        try:
-            Num = float(Checker)
-        except:
-            Checker = "False"
-            my_text.config(text = " Invalid input ")
-
-
-    #Reponsible for doing all of the actual math
-    global my_text
-        
-    C = (my_input.get())
-    Checker = C
-    FloatCheck()
-
-    if Checker != "False":
-        C = float(C)
-        if CalcMode == "Celsuis":  
-            F = (9/5 * C + 32)
-        else:
-            F = (C - 32) * 5/9
-        #Dipslays the actual number
-        my_text.config(text = answer + str(F))
-
-        
-#Sets mode to Fahreinheit
-def FahrMode():
-    global CalcMode
-    CalcMode = "Fahrenheit"
-    caculate()
-
-#Sets mode to Celsuis
-def CelMode():
-    global CalcMode
-    CalcMode = "Celsuis"
-    caculate()
-    
 
 #A shorcut to creating buttons quickly
-def CreateBbt(texts, commands):
+def CreateBbt(texts, commands, Lx = 0, Ly = 0):
     x = Button(frm,
                text=texts,
-               command = commands)
+               command = commands,
+               fg = "darkblue",
+               bg = "lightblue")
+
+
     return x
 
 #A shortcut to creating text quickly
-def CreateTxt(texts):
+def CreateTxt(texts, Lx = 0, Ly = 0):
     x = Label(frm,
-         text=texts)
+         text=texts,)
+    
     return x
 
 #A shortcut to creating Entry widgets
@@ -70,26 +94,276 @@ def CreateEty():
               text="")
     return x
 
-#Adds all widjets to the window
-my_covert = CreateBbt("Convert", caculate)
-my_text = CreateTxt("Answer")
-my_input = CreateEty()
+#All of these are for the checkbuttons, they are used to remeber the select options
+var1 = IntVar()
+var2 = IntVar()
+var3 = IntVar()
+var4 = IntVar()
+var5 = IntVar()
+var6 = IntVar()
+var7 = IntVar()
+var8 = IntVar()
+var9 = IntVar()
 
-my_Fah = CreateBbt("Fahrenheit to Celuis", FahrMode)
-my_Cel = CreateBbt("Celuis to Fahrenheit", CelMode)
+#A shortcut to creating CheckButton widgets
+def CreateCheck_Bbt(texts, commands, item, var):
+    global Toppings
+    global var1
+    global var2
+    Found = Search_and_Find(item)    
+    
+    if Found != "None":
+        var.set(1)
+    x = Checkbutton(frm,text=texts,command = commands,variable = var)
+    
+    return x
 
-CreateTxt("Enter a numerical value").pack()
-CreateTxt("").pack()
+#A shortcut to creating Entry widgets
+def CreateList():
+    x = Listbox(frm,
+              text="")
+    return x
 
-my_input.pack()
-my_covert.pack()
-CreateTxt("").pack()
+#Start of the program, spawns first button and yeah
 
-my_text.pack()
-CreateTxt("").pack()
+Method = "None"
+Size = "None"
+CupType = "None"
+Location = []
+Toppings =[]
 
-my_Cel.pack()
-my_Fah.pack()
+#Planning to add soon for better formating
+title = CreateTxt("#Name of Application")
+space = CreateTxt("")
+
+#All of the user input confirmation labels
+method_show = CreateTxt("Method: " + Method, (0.3, .5))
+size_show = CreateTxt("The current size is: " + Size, (0.3, .5))
+CupType_show = CreateTxt("The container you are using is: " + CupType, (0.3, .5))
+
+#Starts the entire program
+def Begin():
+    global Location
+    Done = "Yes"
+    #Destroys the start button and spawns all of the buttons
+    Start.destroy()
+    Spawner()
+    #Places all of the buttons
+    for i in range(len(Location)):
+        
+        TempX = LocationX[i]
+        TempY = LocationY[i]
+        Location[i].place(x = TempX, y = TempY)
+        
+
+Done = "False"
+
+#Reponsible for configuring the labels to confirm user input
+def SetMethod(Option = "N/A", Label = "N/A"):
+    global Method
+    global Size
+    global CupType
+    
+    if Label == "Method":
+        Method = Option
+        method_show.config(text = ("Method: " + Option))
+        
+    elif Label == "Size":
+        Size = Option
+        size_show.config(text = ("The current size is: " + Option))
+
+    elif Label == "CupType":
+        CupType = Option
+        CupType_show.config(text = ("The container you are using is: " + Option))
+
+#Searches the toppings list and test to see if the list contains a certain item
+def Search_and_Find(item):
+    global Toppings
+    Found = "None"
+    for i in Toppings:
+        if item == i:
+            Found = i
+    return Found
+
+
+#Adds or removes an item to a list
+def ToppingAdd(item):
+    Contains = Search_and_Find(item)
+
+    if Contains != "None":
+        Toppings.remove(Contains)
+    else:
+        Toppings.append(item)
+    
+#This entire function spawns every single button
+def Spawner():
+    #Globalizes popular variables
+    global Location
+    global method_show
+    global size_show
+    global CupType_show
+
+    #Function that adds X and Y positions to the list
+    def AddList(Name, X, Y):
+        global Location
+        Location.append(Name)
+        LocationX.append(X)
+        LocationY.append(Y)
+
+    #Sets the grid
+    frm.geometry('200x200')
+
+    #Method Buttons
+    pick_up = CreateBbt("Pick up",lambda *args: SetMethod("Pick Up", "Method"))
+    dine_in = CreateBbt("Dine in",lambda *args: SetMethod("Dine in", "Method"))
+
+    #Scoop options
+    one_scoop = CreateBbt("One",lambda *args: SetMethod("One Scoop", "Size"))
+    two_scoop = CreateBbt("Two",lambda *args: SetMethod("Two Scoops", "Size"))
+    three_scoop = CreateBbt("Three",lambda *args: SetMethod("Three Scoops", "Size"))
+
+    #Cup type buttons
+    cone = CreateBbt("Cone",lambda *args: SetMethod("Cone", "CupType"))
+    sundae = CreateBbt("Sundae",lambda *args: SetMethod("Sundae", "CupType"))
+
+    #Topping buttons
+    nuts = CreateCheck_Bbt("Nuts",lambda *args: ToppingAdd("nuts"), "nuts", var1)
+    chocolate = CreateCheck_Bbt("Chocolate",lambda *args: ToppingAdd("chocolate"), "chocolate", var2)
+    strawberry_syrup = CreateCheck_Bbt("Strawberry Syrup",lambda *args: ToppingAdd("strawberry_syrup"), "strawberry_syrup", var3)
+    pineapple_syrup = CreateCheck_Bbt("Pineappke Syrup",lambda *args: ToppingAdd("pineapple_syrup"), "pineapple_syrup", var4)
+    whip_cream = CreateCheck_Bbt("Whip Cream",lambda *args: ToppingAdd("whip_cream"), "whip_cream", var5)
+    sprinkles = CreateCheck_Bbt("Sprinkles",lambda *args: ToppingAdd("sprinkles"), "sprinkles", var6)
+    sugar_cookies = CreateCheck_Bbt("Sugar Cookies",lambda *args: ToppingAdd("sugar_cookies"), "sugar_cookies", var7)
+    bananas = CreateCheck_Bbt("Bananas",lambda *args: ToppingAdd("bananas"), "bananas", var8)
+    cherry = CreateCheck_Bbt("Cherry on Top",lambda *args: ToppingAdd("cherry"), "cherry", var9)
+
+    #Order report labels
+    order_report = CreateTxt("Order Report:")
+    size_report = CreateTxt(Size)
+    CupType_report = CreateTxt(CupType)
+    AllToppings = ""
+    #Creates a neater list for toppings
+    for i in Toppings:
+        AllToppings = AllToppings + ", " + i
+    toppings_report = CreateTxt((AllToppings))
+    method_report = CreateTxt("Method Option:")
+    method2_report = CreateTxt(Method)
+
+
+    #Destroys remaining buttons before spawing new ones  
+    for i in Location:
+        i.destroy()
+
+    #Creates forward and back buttons
+    exit_bbt = CreateBbt("Continue", Continue)
+    back_bbt = CreateBbt("Back", Back)
+
+
+
+
+    #Clears all location related list
+    Location.clear()
+    LocationX.clear()
+    LocationY.clear()
+
+    #Adds each needed button/label to the list for placing
+    if Progress == "Method":
+        method_show = CreateTxt("Method: " + Method, (0.3, .5))
+
+        AddList(pick_up, 10, 10)
+        AddList(dine_in, 130, 10)
+        AddList(method_show, 50, 50)
+        AddList(exit_bbt, 60, 100)
+
+    elif Progress == "Size":
+        size_show = CreateTxt("The current size is: " + Size, (0.3, .5))
+
+        AddList(one_scoop, 10, 10)
+        AddList(two_scoop, 90, 10)
+        AddList(three_scoop, 150, 10)
+        AddList(size_show, 30, 50)
+        AddList(exit_bbt, 60, 100)
+        AddList(back_bbt, 60, 130)
+
+    elif Progress == "CupType":
+        CupType_show = CreateTxt("The container you are using is: " + CupType, (0.3, .5))
+
+        AddList(cone, 10, 10)
+        AddList(sundae, 130, 10)
+        AddList(CupType_show, 10, 50)
+        AddList(exit_bbt, 60, 100)
+        AddList(back_bbt, 60, 130)
+
+        
+    elif Progress == "Toppings":
+        AddList(nuts, 10, 10)
+        AddList(chocolate, 10, 30)
+        AddList(strawberry_syrup, 10, 60)
+        AddList(pineapple_syrup, 10, 90)
+        AddList(whip_cream, 150, 10)
+        AddList(sprinkles, 150, 30)
+        AddList(sugar_cookies, 150, 60)
+        AddList(bananas, 150, 90)
+        AddList(cherry, 60, 110)
+        AddList(exit_bbt, 60, 150)
+        AddList(back_bbt, 60, 180)
+
+    elif Progress == "OrderReport":
+        AddList(order_report, 10, 10)
+        AddList(size_report, 50, 40)
+        AddList(CupType_report, 50, 70)
+        AddList(toppings_report, 50, 110)
+        AddList(method_report, 10, 150)
+        AddList(method2_report, 50, 190)
+        AddList(back_bbt, 60, 240)
+
+
+
+#Function that progresses the program
+def Continue():
+    global Counter
+    global Progress
+
+    Counter = Counter + 1
+    Progress = Order[Counter]
+    Begin()
+
+#Function that retraces the program
+def Back():
+    global Counter
+    global Progress
+    Counter = Counter - 1
+    Progress = Order[Counter]
+    Begin()
+
+
+
+Counter = 0
+Order = []
+
+#Names used to orginize all sections
+Order.append("Method")
+Order.append("Size")
+Order.append("CupType")
+Order.append("Toppings")
+Order.append("OrderReport")
+
+#Grid
+frm.geometry('200x200')
+
+#Responsible for launching the entire code
+Start = CreateBbt("Start Order", Begin)
+Start.pack()
+exit_bbt = CreateBbt("Continue", Continue)
+back_bbt = CreateBbt("Back", Back)
 
 
 frm.mainloop()
+
+#Things Im working on...
+
+#Better format
+#Cofirm button at the end
+#Custom grid sizes per screen
+#Centering options and buttons
+
