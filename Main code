@@ -9,7 +9,7 @@
 #   LocationX[] = Keeps all x positions for each widjet
 #   LocationY[] = Keeps all y positions for each widjet
 #   x = local variable used to return button attributes
-#   var1-9 = a series of independent check buttons
+#   var1-9 = a series of indepent check buttons
 #   Method = Records value for dining method
 #   Size = Records value for sizing choice
 #   CupType = Records value for the type of cup
@@ -25,6 +25,9 @@
 #   back_bbt = Retracks the order
 #   Order[] = Contains all screen names
 #   Counter = Used to progress up and down the order list
+#   frame_image = A variable that creates a image for the banner
+#   frame_backgd = A variable that creates a image for the background
+#   Name = A variable that holds the users name
 
 #Unused Variables:
 #   title
@@ -43,7 +46,7 @@
 #    chocolate = chocolate option
 #    strawberry_syrup = strawberry syrup option
 #    pineapple_syrup = pineapple syrup option
-#    whip_cream = whip cream option
+#    whip_cream = whipe cream option
 #    sprinkles = sprinkles option
 #    sugar_cookies = sugar cookie option
 #    bananas = bananas option
@@ -54,44 +57,66 @@
 #    toppings_report = Every topping label
 #    method_report = "Method Option:" label
 #    method2_report = Method label
-
+#    entry_label = Tells user to type a name
+#    entry_bbt = Confirms the name
+#    entry_name = Entry box to enter name
+#    finish = Spawns a new window to exit the program
+#    exits = Closes and Ends the program
 
 
 #Import tkinter into the code
 from tkinter import *
+#import tkinter as tk
+#from PIL import Image, ImageTk
 
 
 #Defining the widjets and list
 frm = Tk()
+frm.resizable(width=False, height=False)
+
 frm.title("Ordering System")
 Progress = "Method"
 basic = []
 LocationX = []
 LocationY = []
 
+#Creates a Banner for the starting screen
+frame_image = Frame(frm, borderwidth=2, bg="white", relief=SUNKEN)
+frame_image.pack(side=TOP, fill="x")
+
+frame_image.picture = PhotoImage(file="Kevins Confections Poster.PNG")
+frame_image.label = Label(frame_image, image=frame_image.picture)
+frame_image.label.pack()
+blk = PhotoImage(file = "Blank.png")
+blank = blk.subsample(0, 0)
+Name = ""
+
+
+
 
 #A shorcut to creating buttons quickly
-def CreateBbt(texts, commands, Lx = 0, Ly = 0):
+def CreateBbt(texts, commands, height = 3, width = 10):
     x = Button(frm,
-               text=texts,
-               command = commands,
-               fg = "darkblue",
-               bg = "lightblue")
+               text=texts, command = commands,
+               fg = "purple4", bg = "MediumPurple1", activebackground = 'MediumPurple4',
+               height = height, width = width,
+               compound = LEFT)
+
 
 
     return x
 
 #A shortcut to creating text quickly
-def CreateTxt(texts, Lx = 0, Ly = 0):
-    x = Label(frm,
-         text=texts,)
+def CreateTxt(texts, images = "", parent = frm):
+    x = Label(parent,
+         text=texts, image = images)
     
     return x
 
 #A shortcut to creating Entry widgets
-def CreateEty():
+def CreateEty(txt):
     x = Entry(frm,
-              text="")
+              text=txt)
     return x
 
 #All of these are for the checkbuttons, they are used to remeber the select options
@@ -108,8 +133,7 @@ var9 = IntVar()
 #A shortcut to creating CheckButton widgets
 def CreateCheck_Bbt(texts, commands, item, var):
     global Toppings
-    global var1
-    global var2
+
     Found = Search_and_Find(item)    
     
     if Found != "None":
@@ -137,9 +161,11 @@ title = CreateTxt("#Name of Application")
 space = CreateTxt("")
 
 #All of the user input confirmation labels
-method_show = CreateTxt("Method: " + Method, (0.3, .5))
-size_show = CreateTxt("The current size is: " + Size, (0.3, .5))
-CupType_show = CreateTxt("The container you are using is: " + CupType, (0.3, .5))
+method_show = CreateTxt("Method: " + Method)
+size_show = CreateTxt("The current size is: " + Size)
+CupType_show = CreateTxt("The container you are using is: " + CupType)
+#CupType_show = CreateTxt("The container you are using is: " + CupType, (0.3, .5))
+
 
 #Starts the entire program
 def Begin():
@@ -147,6 +173,19 @@ def Begin():
     Done = "Yes"
     #Destroys the start button and spawns all of the buttons
     Start.destroy()
+    frame_image.label.destroy()
+    frame_image.destroy()
+
+
+    #Creates the Background
+    frame_backgd = Frame(frm, borderwidth=2, bg="white", relief=SUNKEN)
+    frame_backgd.pack(side=TOP, fill="x")
+    frame_backgd.picture = PhotoImage(file="Kevins Backgd.png")
+    frame_backgd.label = Label(frame_backgd, image=frame_backgd.picture)
+    frame_backgd.label.pack()
+
+    
+    
     Spawner()
     #Places all of the buttons
     for i in range(len(Location)):
@@ -203,6 +242,7 @@ def Spawner():
     global size_show
     global CupType_show
 
+
     #Function that adds X and Y positions to the list
     def AddList(Name, X, Y):
         global Location
@@ -210,13 +250,21 @@ def Spawner():
         LocationX.append(X)
         LocationY.append(Y)
 
-    #Sets the grid
-    frm.geometry('200x200')
+    #Function that gets the users name from the entry box
+    def AcceptName():
+        global Name
+        Name = (entry_name.get())
 
-    #Method Buttons
+    #Sets the grid
+    frm.geometry('427x318')
+    
+                      
     pick_up = CreateBbt("Pick up",lambda *args: SetMethod("Pick Up", "Method"))
     dine_in = CreateBbt("Dine in",lambda *args: SetMethod("Dine in", "Method"))
-
+    entry_label = CreateTxt("Enter your Name Here")
+    entry_bbt = CreateBbt("Confirm Name", AcceptName, 1, 20)
+    entry_name = CreateEty(Name)
+    
     #Scoop options
     one_scoop = CreateBbt("One",lambda *args: SetMethod("One Scoop", "Size"))
     two_scoop = CreateBbt("Two",lambda *args: SetMethod("Two Scoops", "Size"))
@@ -237,6 +285,7 @@ def Spawner():
     bananas = CreateCheck_Bbt("Bananas",lambda *args: ToppingAdd("bananas"), "bananas", var8)
     cherry = CreateCheck_Bbt("Cherry on Top",lambda *args: ToppingAdd("cherry"), "cherry", var9)
 
+
     #Order report labels
     order_report = CreateTxt("Order Report:")
     size_report = CreateTxt(Size)
@@ -248,15 +297,38 @@ def Spawner():
     toppings_report = CreateTxt((AllToppings))
     method_report = CreateTxt("Method Option:")
     method2_report = CreateTxt(Method)
+    finished = CreateBbt("Finish Order", Finish_Order, 1, 20)
+    name_report = CreateTxt("Order for: " + Name)
+
+    #A function used to make sure that the user has inputed required data
+    def SetFinished():
+        global Name
+        
+        ValidInfo = True
+    
+        if Name == "":
+            ValidInfo = False
+        if Method == "None":
+            ValidInfo = False
+        elif Size == "None":
+            ValidInfo = False
+        elif CupType == "None":
+            ValidInfo = False
+
+        #Disables/Enables the button
+        if ValidInfo:
+            finished.config(state = NORMAL)
+        else:
+            finished.config(state = DISABLED)
 
 
-    #Destroys remaining buttons before spawing new ones  
+    #Destroys remaining buttons before spawing new ones
     for i in Location:
         i.destroy()
 
     #Creates forward and back buttons
-    exit_bbt = CreateBbt("Continue", Continue)
-    back_bbt = CreateBbt("Back", Back)
+    exit_bbt = CreateBbt("Continue", Continue, 1, 20)
+    back_bbt = CreateBbt("Back", Back, 1, 20)
 
 
 
@@ -268,54 +340,62 @@ def Spawner():
 
     #Adds each needed button/label to the list for placing
     if Progress == "Method":
-        method_show = CreateTxt("Method: " + Method, (0.3, .5))
+        method_show = CreateTxt("Method: " + Method)
 
-        AddList(pick_up, 10, 10)
-        AddList(dine_in, 130, 10)
-        AddList(method_show, 50, 50)
-        AddList(exit_bbt, 60, 100)
+        AddList(pick_up, 50, 60)
+        AddList(dine_in, 280, 60)
+        AddList(entry_label,140, 130)
+        AddList(entry_name,140,150)
+        AddList(entry_bbt, 130, 230)
+        AddList(method_show, 160, 190)
+        AddList(exit_bbt, 130, 280)
 
     elif Progress == "Size":
-        size_show = CreateTxt("The current size is: " + Size, (0.3, .5))
+        size_show = CreateTxt("The current size is: " + Size)
 
-        AddList(one_scoop, 10, 10)
-        AddList(two_scoop, 90, 10)
-        AddList(three_scoop, 150, 10)
-        AddList(size_show, 30, 50)
-        AddList(exit_bbt, 60, 100)
-        AddList(back_bbt, 60, 130)
+        AddList(one_scoop, 30, 60)
+        AddList(two_scoop, 170, 60)
+        AddList(three_scoop, 300, 60)
+        AddList(size_show, 130, 150)
+        AddList(exit_bbt, 130, 200)
+        AddList(back_bbt, 130, 230)
 
     elif Progress == "CupType":
-        CupType_show = CreateTxt("The container you are using is: " + CupType, (0.3, .5))
+        CupType_show = CreateTxt("The container you are using is: " + CupType)
 
-        AddList(cone, 10, 10)
-        AddList(sundae, 130, 10)
-        AddList(CupType_show, 10, 50)
-        AddList(exit_bbt, 60, 100)
-        AddList(back_bbt, 60, 130)
+        AddList(cone, 50, 60)
+        AddList(sundae, 280, 60)
+        AddList(CupType_show, 100, 150)
+        AddList(exit_bbt, 130, 200)
+        AddList(back_bbt, 130, 230)
 
         
     elif Progress == "Toppings":
-        AddList(nuts, 10, 10)
-        AddList(chocolate, 10, 30)
-        AddList(strawberry_syrup, 10, 60)
-        AddList(pineapple_syrup, 10, 90)
-        AddList(whip_cream, 150, 10)
-        AddList(sprinkles, 150, 30)
-        AddList(sugar_cookies, 150, 60)
-        AddList(bananas, 150, 90)
-        AddList(cherry, 60, 110)
-        AddList(exit_bbt, 60, 150)
-        AddList(back_bbt, 60, 180)
+        AddList(nuts, 50, 50)
+        AddList(chocolate, 50, 70)
+        AddList(strawberry_syrup, 50, 90)
+        AddList(pineapple_syrup, 50, 110)
+        AddList(whip_cream, 200, 50)
+        AddList(sprinkles, 200, 70)
+        AddList(sugar_cookies, 200, 90)
+        AddList(bananas, 200, 110)
+        AddList(cherry, 160, 130)
+        AddList(exit_bbt, 130, 200)
+        AddList(back_bbt, 130, 230)
 
     elif Progress == "OrderReport":
+        SetFinished()
+            
         AddList(order_report, 10, 10)
         AddList(size_report, 50, 40)
         AddList(CupType_report, 50, 70)
         AddList(toppings_report, 50, 110)
         AddList(method_report, 10, 150)
         AddList(method2_report, 50, 190)
+        AddList(name_report, 150, 190)
         AddList(back_bbt, 60, 240)
+        AddList(finished, 60, 270)
+        frm.geometry('627x318')
 
 
 
@@ -323,10 +403,12 @@ def Spawner():
 def Continue():
     global Counter
     global Progress
+    global Name
 
     Counter = Counter + 1
     Progress = Order[Counter]
     Begin()
+    
 
 #Function that retraces the program
 def Back():
@@ -336,8 +418,40 @@ def Back():
     Progress = Order[Counter]
     Begin()
 
+#Destroys the old screen and creates a new exit screen
+def Finish_Order():
+    def Destroy():
+        frm2.destroy()
+        
+    frm.destroy()
+    
+    frm2 = Tk()
+    frm2.title = "Finished"
+    frm2.geometry('427x318')
+    frm2.resizable(width=False, height=False)
+
+    #Creates a new background image
+    frame_backgd = Frame(frm2, borderwidth=2, bg="white", relief=SUNKEN)
+    frame_backgd.pack(side=TOP, fill="x")
+    frame_backgd.picture = PhotoImage(file="KevinsEnd.png")
+    frame_backgd.label = Label(frame_backgd, image=frame_backgd.picture)
+    frame_backgd.label.pack()
+
+    #Creates the final button
+    exits = Button(frm2,
+               text="Exit", command = Destroy,
+               fg = "purple4", bg = "MediumPurple1", activebackground = 'MediumPurple4',
+               height = 3, width = 10,
+               compound = LEFT)
+    
+    exits.place(x = 150, y = 250)
+    
+
+    
+    frm2.mainloop()
 
 
+#Sets default variables
 Counter = 0
 Order = []
 
@@ -349,21 +463,13 @@ Order.append("Toppings")
 Order.append("OrderReport")
 
 #Grid
-frm.geometry('200x200')
+frm.geometry('427x318')
 
 #Responsible for launching the entire code
 Start = CreateBbt("Start Order", Begin)
-Start.pack()
+Start.place(x = 165,y = 170)
 exit_bbt = CreateBbt("Continue", Continue)
 back_bbt = CreateBbt("Back", Back)
 
 
 frm.mainloop()
-
-#Things Im working on...
-
-#Better format
-#Cofirm button at the end
-#Custom grid sizes per screen
-#Centering options and buttons
-
